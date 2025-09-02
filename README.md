@@ -48,7 +48,7 @@ Create a `.env` file in the root directory or use the existing `config.js`:
 
 ```bash
 # Environment Configuration
-ENV=prod
+ENV=qa
 
 # QA Environment
 QA_URL=http://127.0.0.1:8000/
@@ -60,10 +60,6 @@ DEV_URL=http://127.0.0.1:1/
 DEV_EMAIL=kuldeep@test.com
 DEV_PASSWORD=kuldeep@1234
 
-# Production Environment
-PROD_URL=https://67afc96622a523c521947755f0679777.serveo.net
-PROD_EMAIL=kuldeep@test.com
-PROD_PASSWORD=kuldeep@12345
 
 # Default Base URL
 BASE_URL=http://127.0.0.1:8000
