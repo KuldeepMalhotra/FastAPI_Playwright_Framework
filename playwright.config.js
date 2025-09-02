@@ -47,8 +47,8 @@ module.exports = defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: process.env.CI ? {
     command: 'python3 server.py',
-    url: 'http://127.0.0.1:8000',
+    url: 'http://127.0.0.1:8000/openapi.json',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 180000,
   } : undefined,
 });
