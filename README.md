@@ -26,7 +26,7 @@ This project is a complete conversion of the original Java/TestNG BookStore API 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/KuldeepMalhotra/FastAPI_Playwright_Framework.git
    cd FastAPI_Playwright_Framework
    ```
 
@@ -56,7 +56,7 @@ QA_EMAIL=kuldeep@test.com
 QA_PASSWORD=kuldeep@123
 
 # Dev Environment
-DEV_URL=http://127.0.0.1:1/
+DEV_URL=http://127.0.0.1:8000/
 DEV_EMAIL=kuldeep@test.com
 DEV_PASSWORD=kuldeep@1234
 
@@ -72,9 +72,19 @@ The `playwright.config.js` file contains:
 - Single worker execution for sequential test runs
 - Browser settings
 - Reporter configuration (HTML, JSON, JUnit, Allure)
-- Base URL settings
+- Base URL settings (defaults to `http://127.0.0.1:8000`)
 - Screenshot and video capture settings
 - Trace collection on retry
+- In CI, the API server is auto-started via `webServer` and Playwright waits for `http://127.0.0.1:8000/openapi.json` to be ready. Locally, you must start the server yourself (see below).
+
+### Start Server
+
+Run the FastAPI server locally before executing tests:
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 server.py
+```
 
 ## 🧪 Running Tests
 
@@ -100,10 +110,10 @@ npm run test:debug
 
 ### Run Tests with Allure
 ```bash
-# Run tests and generate Allure report
+# Run tests and generate + open Allure report
 npm run test:allure
 
-# Run tests with interactive Allure setup
+# Alternative: orchestrated Allure run (opens report automatically)
 npm run test:allure:full
 ```
 
@@ -113,10 +123,7 @@ This project includes **Allure reporting** for enhanced test result visualizatio
 
 ### Allure Commands
 ```bash
-# Generate HTML report
-npm run allure:generate
-
-# Open generated report
+# Open last Playwright report
 npm run allure:open
 
 # Serve report dynamically (auto-refresh)
@@ -146,18 +153,18 @@ npm run report
 ```
 FastAPI_Playwright_Framework/
 ├── tests/                          # Test files (sequentially ordered)
-│   ├── fixtures.js                 # Test fixtures and setup
-│   ├── 1-healthCheck.spec.js       # Health check tests
-│   ├── 2-createUserSignUp.spec.js  # User signup tests
-│   ├── 3-loginForAccessToken.spec.js # Login tests
-│   ├── 4-getAllBooks.spec.js       # Get all books tests
-│   ├── 5-CreateBook.spec.js        # Create book tests
-│   ├── 6-getBookById.spec.js       # Get book by ID tests
-│   ├── 7-updateBook.spec.js        # Update book tests
-│   ├── 8-deleteBook.spec.js        # Delete book tests
-│   ├── 9-tokenTest.spec.js         # Token validation tests
-│   ├── 10-incorrectJsonFormat.spec.js # Invalid JSON tests
-│   └── bookstore.spec.js           # Complete test suite
+│   ├── fixtures.js                   # Test fixtures and setup
+│   ├── 1-serverStatusCheck.spec.js   # Health check tests
+│   ├── 2-newUserSignUp.spec.js       # User signup tests
+│   ├── 3-getAccessToken.spec.js      # Login tests
+│   ├── 4-listOfAllBooks.spec.js      # Get all books tests
+│   ├── 5-addNewBook.spec.js          # Create book tests
+│   ├── 6-fetchBookById.spec.js       # Get book by ID tests
+│   ├── 7-updateBookById.spec.js      # Update book tests
+│   ├── 8-deleteBookById.spec.js      # Delete book tests
+│   ├── 9-validateToken.spec.js       # Token validation tests
+│   ├── 10-invalidJsonFormat.spec.js  # Invalid JSON tests
+│   └── bookstore.spec.js             # Complete test suite
 ├── utils/                          # Utility files
 │   ├── apiClient.js                # HTTP client for API requests
 │   ├── assertions.js               # Custom assertion utilities
@@ -265,6 +272,18 @@ The project is ready for CI/CD integration with:
 - Environment variable support
 - Headless execution support
 - Allure report generation
+
+### GitHub Actions
+
+CI workflow: `.github/workflows/playwright.yml`
+
+- Sets up Node and Python
+- Installs Python deps from `requirements.txt`
+- Installs Playwright and browsers
+- Starts FastAPI via Playwright `webServer` (CI-only) and waits for `openapi.json`
+- Uploads HTML report artifact
+
+If CI times out waiting for the server, ensure `server.py` starts correctly and that `/openapi.json` responds with 200.
 
 ## 📄 License
 
